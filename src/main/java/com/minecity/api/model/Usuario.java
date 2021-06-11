@@ -81,6 +81,10 @@ public class Usuario {
 		this.amigos.add(username);
 	}
 	
+	public void setAmigos(List<String> amigos) {
+		this.amigos = amigos;
+	}
+
 	public List<String> getSolicitacoesDeAmizade() {
 		return solicitacoesDeAmizade;
 	}

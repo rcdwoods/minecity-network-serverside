@@ -21,6 +21,10 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
 	private PermissaoRepository permissaoRepository;
 
+	public UsuarioServiceImpl(UsuarioRepository usuarioRepository) {
+		this.usuarioRepository = usuarioRepository;
+	}
+
 	public Usuario obterUsuarioPorNome(String username) {
 		return this.usuarioRepository.findByUsernameIgnoreCase(username)
 				.orElseThrow(() -> new EmptyResultDataAccessException(1));
@@ -35,8 +39,8 @@ public class UsuarioServiceImpl implements UsuarioService {
 	}
 
 	public Usuario cadastrarUsuario(Usuario usuario) throws Exception {
-
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		
 		if (!this.usernameIsExistente(usuario.getUsername()) && !this.emailIsExistente(usuario.getUsername())) {
 			usuario.addPermissao(permissaoRepository.findById((long) 1).orElseThrow(() -> new Exception()));
 			usuario.addPermissao(permissaoRepository.findById((long) 2).orElseThrow(() -> new Exception()));
@@ -73,7 +77,9 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public boolean removerSolicitacaoDeAmizade(String usernameAlvo, String autor) throws Exception {
 		Usuario usuario = this.usuarioRepository.findByUsernameIgnoreCase(usernameAlvo)
 				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+		
 		List<String> novasSolicitacoesDeAmizade = new ArrayList<String>();
+		
 		if (usuario.getSolicitacoesDeAmizade().contains(autor)) {
 			for (String solicitacaoDeAmizade : usuario.getSolicitacoesDeAmizade()) {
 				if (!solicitacaoDeAmizade.equals(autor)) {
@@ -87,12 +93,13 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return false;
 	}
 
-	// adiciona um novo amigo à lista de amigos do usernameAlvo.
+	// Adiciona um novo amigo à lista de amigos do usernameAlvo.
 	public boolean novaAmizade(String usernameUm, String usernameDois) throws Exception {
 		Usuario usuarioUm = this.usuarioRepository.findByUsernameIgnoreCase(usernameUm)
 				.orElseThrow(() -> new IllegalArgumentException("Um dos usuários é inexistente."));
 		Usuario usuarioDois = this.usuarioRepository.findByUsernameIgnoreCase(usernameDois)
 				.orElseThrow(() -> new IllegalArgumentException("Um dos usuários é inexistente."));
+		
 		if (!usuarioUm.getAmigos().contains(usernameDois)) {
 			usuarioUm.addAmigo(usernameDois);
 			usuarioDois.addAmigo(usernameUm);
@@ -109,19 +116,19 @@ public class UsuarioServiceImpl implements UsuarioService {
 	public List<String> obterListaDeAmigos(String username) {
 		Usuario usuario = this.usuarioRepository.findByUsernameIgnoreCase(username)
 				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
-		List<String> listaDeAmigos = new ArrayList<String>();
-		listaDeAmigos = usuario.getAmigos();
-		return listaDeAmigos;
+		return usuario.getAmigos();
 	}
 
+	// Recebe o nome de dois usuários e retorna uma lista de seus amigos em comum.
 	public List<String> obterAmigosEmComum(String primeiroUsername, String segundoUsername) {
-		if (!this.usuarioRepository.existsByUsernameIgnoreCase(primeiroUsername)
-				|| !this.usuarioRepository.existsByUsernameIgnoreCase(segundoUsername)) {
+		if (!this.usernameIsExistente(primeiroUsername) || !this.usernameIsExistente(segundoUsername)) {
 			return null;
 		}
+
 		List<String> primeiraListaDeAmigos = this.obterListaDeAmigos(primeiroUsername);
 		List<String> segundaListaDeAmigos = this.obterListaDeAmigos(segundoUsername);
 		List<String> listaDeAmigosEmComum = new ArrayList<String>();
+
 		primeiraListaDeAmigos.forEach(amigo -> {
 			if (segundaListaDeAmigos.contains(amigo)) {
 				listaDeAmigosEmComum.add(amigo);
@@ -130,13 +137,16 @@ public class UsuarioServiceImpl implements UsuarioService {
 		return listaDeAmigosEmComum;
 	}
 
+	// Recebe o nome de um usuário 'usernameAlvo" e uma palavra "startsWith".
+	// Pesquisa e retorna nome de amigos desse usuário que começam com a palavra
+	// "startsWith"
 	public List<String> pesquisarAmigos(String usernameAlvo, String startsWith) {
 		Usuario usuarioAlvo = this.usuarioRepository.findByUsernameIgnoreCase(usernameAlvo)
 				.orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
 		List<Usuario> usuarios = this.usuarioRepository.findByUsernameStartsWithIgnoreCase(startsWith);
 		List<String> amigosEncontrados = new ArrayList<String>();
 		usuarios.forEach(usuario -> {
-			if(usuarioAlvo.getAmigos().contains(usuario.getUsername())) {
+			if (usuarioAlvo.getAmigos().contains(usuario.getUsername())) {
 				amigosEncontrados.add(usuario.getUsername());
 			}
 		});

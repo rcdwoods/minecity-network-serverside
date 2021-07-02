@@ -12,6 +12,15 @@ public class Comentario {
 	private String id;
 	private String autor;
 	private String texto;
+	
+	public Comentario() {
+	}
+	
+	public Comentario(String id, String autor, String texto) {
+		this.id = id;
+		this.autor = autor;	
+		this.texto = texto;
+	}
 
 	public String getId() {
 		return id;

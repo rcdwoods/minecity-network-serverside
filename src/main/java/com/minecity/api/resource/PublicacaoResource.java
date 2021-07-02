@@ -38,12 +38,12 @@ public class PublicacaoResource {
 		return ResponseEntity.ok().body(publicacoes);
 	}
 
-	@PostMapping("/comentario/{publicacaoId}")
-	public ResponseEntity<?> novoComentario(@RequestBody Comentario comentario, @PathVariable String publicacaoId)
-			throws Exception {
-		Comentario comentarioAdicionado = this.publicacaoServiceImpl.novoComentario(comentario, publicacaoId);
-		return comentarioAdicionado.equals(null) ? ResponseEntity.badRequest().build()
-				: ResponseEntity.status(HttpStatus.CREATED).body(comentarioAdicionado);
+	@PostMapping("/{publicacaoId}")
+	public ResponseEntity<?> editarPublicacao(@PathVariable String publicacaoId, @RequestBody Publicacao publicacao) {
+		publicacao.setId(publicacaoId);
+		Publicacao publicacaoEditada = this.publicacaoServiceImpl.editarPublicacao(publicacao);
+		return publicacaoEditada == null ? ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+				: ResponseEntity.status(HttpStatus.CREATED).body(publicacaoEditada);
 	}
 
 	@DeleteMapping("/{publicacaoId}")
@@ -60,19 +60,28 @@ public class PublicacaoResource {
 	public Iterable<Publicacao> obterPublicacoesDoUsuario(@PathVariable String autor) {
 		return this.publicacaoServiceImpl.obterPublicacoesDoUsuario(autor);
 	}
-	
+
+	@PostMapping("/comentario/{publicacaoId}")
+	public ResponseEntity<?> novoComentario(@RequestBody Comentario comentario, @PathVariable String publicacaoId)
+			throws Exception {
+		Comentario comentarioAdicionado = this.publicacaoServiceImpl.novoComentario(comentario, publicacaoId);
+		return comentarioAdicionado.equals(null) ? ResponseEntity.badRequest().build()
+				: ResponseEntity.status(HttpStatus.CREATED).body(comentarioAdicionado);
+	}
+
 	@DeleteMapping("/comentario/{publicacaoId}/{comentarioId}")
-	public ResponseEntity<?> removerComentario(@PathVariable String publicacaoId, @PathVariable String comentarioId) throws Exception {
+	public ResponseEntity<?> removerComentario(@PathVariable String publicacaoId, @PathVariable String comentarioId)
+			throws Exception {
 		this.publicacaoServiceImpl.excluirComentario(publicacaoId, comentarioId);
 		return ResponseEntity.ok().build();
 	}
-	
+
 	@PostMapping("/curtida/{publicacaoId}")
 	public ResponseEntity<?> adicionarCurtida(@PathVariable String publicacaoId, @RequestBody Curtida curtida) {
 		this.publicacaoServiceImpl.novaCurtida(curtida, publicacaoId);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
-	
+
 	@DeleteMapping("/curtida/{publicacaoId}/{autor}")
 	public ResponseEntity<?> removerCurtida(@PathVariable String publicacaoId, @PathVariable String autor) {
 		this.publicacaoServiceImpl.removerCurtida(autor, publicacaoId);

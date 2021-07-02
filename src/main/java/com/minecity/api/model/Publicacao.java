@@ -21,10 +21,23 @@ public class Publicacao {
 	private String id;
 	private String autor;
 	private String texto;
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone="America/Sao_Paulo")
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "America/Sao_Paulo")
 	private Date dataPostagem;
 	private List<Curtida> curtidas = new ArrayList<Curtida>();
 	private List<Comentario> comentarios = new ArrayList<Comentario>();
+	private boolean editorIsAberto;
+
+	public Publicacao() {
+	}
+
+	public Publicacao(String autor, String texto, Date dataPostagem, List<Curtida> curtidas,
+			List<Comentario> comentarios) {
+		this.autor = autor;
+		this.texto = texto;
+		this.dataPostagem = dataPostagem;
+		this.curtidas = curtidas;
+		this.comentarios = comentarios;
+	}
 
 	public String getId() {
 		return id;
@@ -49,7 +62,7 @@ public class Publicacao {
 	public void setTexto(String texto) {
 		this.texto = texto;
 	}
-	
+
 	public Date getDataPostagem() {
 		return dataPostagem;
 	}
@@ -65,11 +78,11 @@ public class Publicacao {
 	public void setCurtidas(List<Curtida> curtidas) {
 		this.curtidas = curtidas;
 	}
-	
+
 	public void addCurtida(Curtida curtida) {
 		this.curtidas.add(curtida);
 	}
-	
+
 	public void removeCurtida(Curtida curtida) {
 		this.curtidas.remove(curtida);
 	}
@@ -88,6 +101,14 @@ public class Publicacao {
 
 	public void removeComentario(Comentario comentario) {
 		this.comentarios.remove(comentario);
+	}
+
+	public boolean isEditorIsAberto() {
+		return editorIsAberto;
+	}
+
+	public void setEditorIsAberto(boolean editorIsAberto) {
+		this.editorIsAberto = editorIsAberto;
 	}
 
 }

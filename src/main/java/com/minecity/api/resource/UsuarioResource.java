@@ -74,6 +74,13 @@ public class UsuarioResource {
 				: ResponseEntity.status(HttpStatus.CONFLICT).build();
 	}
 
+	@DeleteMapping("/{username}/amigos/{friendname}")
+	public ResponseEntity<?> desfazerAmizadeEntreUsuarios(@PathVariable String username,
+			@PathVariable String friendname) {
+		this.usuarioServiceImpl.desfazerAmizade(username, friendname);
+		return ResponseEntity.noContent().build();
+	}
+
 	@GetMapping("/{username}/amigos")
 	public ResponseEntity<?> obterListaDeAmigos(@PathVariable String username, HttpServletRequest httpServletRequest) {
 		List<String> listaDeAmigos = this.usuarioServiceImpl.obterListaDeAmigos(username);
@@ -85,7 +92,7 @@ public class UsuarioResource {
 		}
 		return ResponseEntity.ok().body(listaDeAmigos);
 	}
-	
+
 	@GetMapping("/{username}/amigos/{friendname}")
 	public ResponseEntity<?> pesquisarAmigos(@PathVariable String username, @PathVariable String friendname) {
 		List<String> amigosEncontrados = this.usuarioServiceImpl.pesquisarAmigos(username, friendname);
@@ -108,11 +115,12 @@ public class UsuarioResource {
 	}
 
 	@GetMapping("/amigos/{primeiroUsername}/{segundoUsername}")
-	public ResponseEntity<?> obterAmigosEmComum(@PathVariable String primeiroUsername, @PathVariable String segundoUsername) {
+	public ResponseEntity<?> obterAmigosEmComum(@PathVariable String primeiroUsername,
+			@PathVariable String segundoUsername) {
 		List<String> listaDeAmigosEmComum = this.usuarioServiceImpl.obterAmigosEmComum(primeiroUsername,
 				segundoUsername);
-		return listaDeAmigosEmComum == null ?
-				ResponseEntity.noContent().build() : ResponseEntity.ok(listaDeAmigosEmComum);
+		return listaDeAmigosEmComum == null ? ResponseEntity.noContent().build()
+				: ResponseEntity.ok(listaDeAmigosEmComum);
 	}
 
 }

@@ -13,7 +13,6 @@ public class Usuario {
 
 	@Id
 	private String id;
-
 	private String username;
 	private String email;
 	private String senha;
@@ -24,7 +23,19 @@ public class Usuario {
 	private List<String> solicitacoesDeAmizade = new ArrayList<String>();
 	private List<Permissao> permissoes = new ArrayList<Permissao>();
 	private List<Notificacao> notificacoes = new ArrayList<Notificacao>(); 
+	
+	public Usuario() {
+	}
 
+	public Usuario(String username, String email, String senha, List<String> amigos, float money, int residencias) {
+		this.username = username;
+		this.email = email;
+		this.senha = senha;
+		this.amigos = amigos;
+		this.money = money;
+		this.residencias = residencias;
+	}
+	
 	public String getId() {
 		return id;
 	}

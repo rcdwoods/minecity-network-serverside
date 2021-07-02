@@ -1,6 +1,6 @@
 package com.minecity.api.security;
 
-import java.util.Collection;  
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +28,7 @@ public class AppUserDetailsService implements UserDetailsService {
 		Optional<Usuario> usuarioOptional = usuarioRepository.findByUsernameIgnoreCase(username);
 		Usuario usuario = usuarioOptional
 				.orElseThrow(() -> new UsernameNotFoundException("Usuario e/ou senha incorretos."));
-		return new User(username, usuario.getSenha(), getPermissoes(usuario));
+		return new User(usuario.getUsername(), usuario.getSenha(), getPermissoes(usuario));
 	}
 
 	private Collection<? extends GrantedAuthority> getPermissoes(Usuario usuario) {
